@@ -1,10 +1,10 @@
 // Enemies our player must avoid
-var Enemy = function(x, y, speed) {
+var Enemy = function(x, y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     this.x = x;
     this.y = y;
-    this.speed = speed;
+    this.speed = ((Math.random() * 100) + 1);
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -17,12 +17,12 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    var level = 30;
-    var xSpeed = Math.floor((Math.random() * 10) + 1);
+    var level = 10;
     if (this.x < 505) {
-        this.x = this.x + ((level + xSpeed) * dt);
+        this.x = this.x + ((level + this.speed) * dt);
     } else {
-        this.x = -90 + ((level + xSpeed) * dt);
+        this.speed = ((Math.random() * 100) + 1);
+        this.x = -90 + ((level + this.speed) * dt);
     }
 };
 
@@ -42,17 +42,48 @@ var Player = function(x, y) {
     this.sprite = 'images/char-boy.png';
 
     this.update = function() {
-        console.log("update");
-        this.x = this.x + 0;
-        this.y = this.y + 0;
     }
 
-    this.render = function () {
+    this.render = function() {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 
-    this.handleInput = function (x){
-        console.log(x);
+    this.handleInput = function(keyPress){
+        var xMove = 101,
+            yMove = 83;
+
+        switch (keyPress) {
+
+            case 'left':
+                console.log('pressed left');
+                if (this.x > 0) {
+                    this.x -= xMove;
+                }
+                break;
+
+            case 'right':
+                console.log('pressed right');
+                if (this.x < ctx.canvas.clientWidth - xMove) {
+                    this.x += xMove;
+                }
+                break;
+
+            case 'down':
+                console.log('pressed down');
+                console.log(this.y);
+                if (this.y < ctx.canvas.clientHeight - (yMove * 3)) {
+                    this.y += yMove;
+                }
+                break;
+
+            case 'up':
+                console.log('pressed up');
+                console.log(this.y);
+                if (this.y > 0) {
+                this.y -= yMove;
+                }
+                break;
+        }
     }
 }
 
@@ -60,11 +91,11 @@ var Player = function(x, y) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var foeTop = new Enemy(-70, 60, 18),
-    foeMid = new Enemy(-70, 145, 25),
-    foeBot = new Enemy(-70, 230, 20);
+var foeTop = new Enemy(-70, 60),
+    foeMid = new Enemy(-70, 143),
+    foeBot = new Enemy(-70, 227);
 var allEnemies = [foeTop, foeMid, foeBot];
-var player = new Player(205, 400);
+var player = new Player(202, 403);
 
 
 // This listens for key presses and sends the keys to your
