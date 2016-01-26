@@ -5,7 +5,6 @@ var Enemy = function(x, y) {
     // Enemy coordinates
     this.x = x;
     this.y = y;
-
     this.speed = ((Math.random() * 100) + 1);
 
     // The image/sprite for our enemies, this uses
@@ -49,33 +48,58 @@ var Player = function(x, y) {
     this.x = x;
     this.y = y;
 
+    this.score = 0;
+    this.lives = 5;
+    this.message = "";
     // Player image
     this.sprite = 'images/char-boy.png';
 
     this.update = function() {
-        var spriteHeight = 83;
+        var spriteHeight = 83,
+            playerLoc = [this.x, this.y];
 
-        var playerLoc = [this.x, this.y]
-
+        // Check for collisions with enemy
         for (var i = 0; i < allEnemies.length; i++) {
-            // Check left and right boundaries for collisions
             var spriteLeft = allEnemies[i].x + -80,
                 spriteRight = spriteLeft + 158;
 
             if (playerLoc[0] > spriteLeft && playerLoc[0] < spriteRight){
                 if (playerLoc[1] > allEnemies[i].y && playerLoc[1] < allEnemies[i].y + spriteHeight) {
-                console.log("COLLISION!")
-                console.log(this.x, allEnemies[i].x);
-                ctx.font = '36pt Arial';
-                ctx.fillText('Ouch!', 300, 300);
-                this.x = 202;
-                this.y = 403;
+                console.log("COLLISION!");
+                this.lives -= 1;
+                this.message = "Ouch!";
+                // If collision, player resets to bottom center
+                this.resetPosition();
                 }
             }
         }
+        // Check if player makes it to the top
+        if (playerLoc[1] <= 70) {
+            console.log("HOME!");
+            this.score += 1;
+            this.message = "Yay!";
+            this.resetPosition();
+        }
+    }
+
+    this.resetPosition = function() {
+        this.x = 202;
+        this.y = 403;
     }
 
     this.render = function() {
+        var scoreLoc = [5, 570],
+            livesLoc = [380, 570],
+            msgLoc = [202, 100];
+        ctx.font = "bold 20pt Arial";
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "white";
+        ctx.fillText("Score: " + this.score, scoreLoc[0], scoreLoc[1]);
+        ctx.strokeText("Score: " + this.score, scoreLoc[0], scoreLoc[1]);
+        ctx.fillText("Lives: " + this.lives, livesLoc[0], livesLoc[1]);
+        ctx.strokeText("Lives: " + this.lives, livesLoc[0], livesLoc[1]);
+        ctx.fillText(this.message, msgLoc[0], msgLoc[1]);
+        ctx.strokeText(this.message, msgLoc[0], msgLoc[1]);
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 
