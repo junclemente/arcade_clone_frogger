@@ -69,7 +69,7 @@ var Player = function(x, y) {
                 this.lives -= 1;
                 this.message = "Ouch!";
                 // If collision, player resets to bottom center
-                this.resetPosition();
+                setTimeout(this.resetPosition, 2000);
                 }
             }
         }
