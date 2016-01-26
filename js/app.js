@@ -21,11 +21,18 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     var level = 0;
     if (this.x < 505) {
-        this.x = this.x - ((level + this.speed) * dt);
+        this.x = this.x + ((level + this.speed) * dt);
     } else {
         this.speed = ((Math.random() * 100) + 1);
         this.x = -90 + ((level + this.speed) * dt);
     }
+    // Reverse movement
+    // if (this.x > -90) {
+    //     this.x = this.x - ((level + this.speed) * dt);
+    // } else {
+    //     this.speed = 30; //((Math.random() * 100) + 1);
+    //     this.x = 505 - ((level + this.speed) * dt);
+    // }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -46,23 +53,23 @@ var Player = function(x, y) {
     this.sprite = 'images/char-boy.png';
 
     this.update = function() {
-        var spriteWidth = 101,
-            spriteHeight = 83,
-            collision = false;
+        var spriteHeight = 83;
 
-        // playerLoc is estimated center of the Player image
-        var playerLoc = [this.x + 50, this.y + 42];
+        var playerLoc = [this.x, this.y]
 
         for (var i = 0; i < allEnemies.length; i++) {
             // Check left and right boundaries for collisions
-            var spriteLeft = allEnemies[i].x + -30,
-                spriteRight = allEnemies[i].x + -10;
+            var spriteLeft = allEnemies[i].x + -80,
+                spriteRight = spriteLeft + 158;
 
-            if (playerLoc[0] > spriteLeft && playerLoc[1] < spriteRight) {
+            if (playerLoc[0] > spriteLeft && playerLoc[0] < spriteRight){
                 if (playerLoc[1] > allEnemies[i].y && playerLoc[1] < allEnemies[i].y + spriteHeight) {
-                    console.log("COLLISION!!!!");
-                    this.x = 202;
-                    this.y = 403;
+                console.log("COLLISION!")
+                console.log(this.x, allEnemies[i].x);
+                ctx.font = '36pt Arial';
+                ctx.fillText('Ouch!', 300, 300);
+                this.x = 202;
+                this.y = 403;
                 }
             }
         }
@@ -115,11 +122,11 @@ var Player = function(x, y) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var foeTop = new Enemy(370, 60),
+var foeTop = new Enemy(-70, 60),
     foeMid = new Enemy(-70, 143),
     foeBot = new Enemy(-70, 227);
-// var allEnemies = [foeTop, foeMid, foeBot];
-var allEnemies = [foeTop];
+var allEnemies = [foeTop, foeMid, foeBot];
+// var allEnemies = [foeTop];
 var player = new Player(202, 403);
 
 
