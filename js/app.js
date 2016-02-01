@@ -58,15 +58,15 @@ var Player = function(x, y) {
 
         if (this.collisionCheck()) {
             console.log("COLLISION!!");
-            this.message = "Ouch! Try Again!";
+            Score.message = "Ouch! Try Again!";
             this.resetPosition();
-            this.lives -= 1;
+            Score.updateLives();
         }
         if (this.homeCheck()) {
             console.log("HOME!!");
-            this.message = "Score!!!";
+            Score.message = "Score!!!";
             this.resetPosition();
-            this.score += 10;
+            Score.updateScore();
         }
     };
 
@@ -101,24 +101,6 @@ var Player = function(x, y) {
     };
 
     this.render = function() {
-        var scoreLoc = [15, 570],
-            livesLoc = [390, 570],
-            msgLoc = [251, 100];
-
-        // Draw Score and Lives
-        ctx.font = "bold 20pt Arial";
-        ctx.strokeStyle = "black";
-        ctx.fillStyle = "white";
-        ctx.textAlign = "left"
-        ctx.fillText("Score: " + this.score, scoreLoc[0], scoreLoc[1]);
-        ctx.strokeText("Score: " + this.score, scoreLoc[0], scoreLoc[1]);
-        ctx.fillText("Lives: " + this.lives, livesLoc[0], livesLoc[1]);
-        ctx.strokeText("Lives: " + this.lives, livesLoc[0], livesLoc[1]);
-        // Draw Messages
-        ctx.font = "bold 24pt Arial";
-        ctx.textAlign = "center";
-        ctx.fillText(this.message, msgLoc[0], msgLoc[1]);
-        ctx.strokeText(this.message, msgLoc[0], msgLoc[1]);
         // Draw Character
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     };
@@ -130,13 +112,13 @@ var Player = function(x, y) {
             yMove = 83;
 
         if (keyPress == 'spacebar') {
-            this.demoMode = false;
-            this.message = "Let's go!";
+            Score.demoMode = false;
+            Score.message = "Move using WASD or Arrow Keys";
         }
-        if (this.demoMode === true) {
-            this.message = "Press Space Bar to Play.";
+        if (Score.demoMode === true) {
+            Score.message = "Press Space Bar to Play.";
         }
-        if (this.demoMode === false) {
+        if (Score.demoMode === false) {
             switch (keyPress) {
                 case 'left':
                     // console.log('pressed left');
@@ -167,24 +149,61 @@ var Player = function(x, y) {
     };
 };
 
+// Score tracking
+var Score = {
+
+    playerScore: 0,
+    playerLives: 3,
+    demoMode: true,
+    message: "",
+
+    updateScore: function() {
+        this.playerScore += 10;
+        return this.playerScore;
+    },
+
+    updateLives: function() {
+        this.playerLives -= 1;
+        return this.playerLives;
+    },
+
+    resetScore: function() {
+        this.playerScore = 0;
+        this.playerLives = 3;
+        return (this.playerScore, this.playerLives);
+    },
+
+    render: function() {
+
+        var scoreLoc = [15, 570],
+        livesLoc = [390, 570],
+        msgLoc = [251, 100];
+
+        if (this.demoMode === true) {
+            this.message = "Press Spacebar to Play"
+        }
+
+        // Draw Score and Lives
+        ctx.font = "bold 20pt Arial";
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "left"
+        ctx.fillText("Score: " + Score.playerScore, scoreLoc[0], scoreLoc[1]);
+        ctx.strokeText("Score: " + Score.playerScore, scoreLoc[0], scoreLoc[1]);
+        ctx.fillText("Lives: " + Score.playerLives, livesLoc[0], livesLoc[1]);
+        ctx.strokeText("Lives: " + Score.playerLives, livesLoc[0], livesLoc[1]);
+        // Draw Messages
+        ctx.font = "bold 24pt Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(this.message, msgLoc[0], msgLoc[1]);
+        ctx.strokeText(this.message, msgLoc[0], msgLoc[1]);
+    }
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 // var allEnemies = []
-
-// var createEnemy = function(level) {
-//     var enemyRow = [60, 143, 227];
-//     var i = 0;
-//     while (i < 4) {
-//         var randomRow = enemyRow[Math.floor(Math.random() * enemyRow.length)];
-//         console.log(randomRow);
-//         allEnemies[i] = new Enemy(-70, randomRow);
-//         i++;
-//     }
-// };
-// createEnemy();
-
 
 var foeTop = new Enemy(-70, 60),
     foeMid = new Enemy(-70, 143),
