@@ -70,14 +70,14 @@ var Player = function(x, y) {
     this.update = function() {
 
         if (this.collisionCheck()) {
-            console.log("COLLISION!!");
-            Score.message = "Ouch! Try Again!";
+            console.log('COLLISION!!');
+            Score.message = 'Ouch! Try Again!';
             Score.updateLives();
             this.resetPosition();
         }
         if (this.homeCheck()) {
-            console.log("HOME!!");
-            Score.message = "Score!!!";
+            console.log('HOME!!');
+            Score.message = 'Score!!!';
             Score.updateScore();
             this.resetPosition();
         }
@@ -131,7 +131,7 @@ var Player = function(x, y) {
 
         if (keyPress == 'spacebar') {
             Score.demoMode = false;
-            Score.message = "Move using WASD or Arrow Keys";
+            Score.message = 'Move using WASD or Arrow Keys';
         }
 
         if (Score.demoMode === false) {
@@ -157,7 +157,7 @@ var Player = function(x, y) {
                     }
                     break;
                 default:
-                    console.log('keyPress not acceptable');
+                    console.log('keyPress does not cause movement');
                     break;
             }
         }
@@ -173,7 +173,7 @@ var Score = {
     playerLives: 2,
     gameLevel: 0,
     demoMode: true,
-    message: "Press Spacebar to Play.",
+    message: 'Press Spacebar to Play.',
 
     updateScore: function() {
         this.playerScore += 10;
@@ -190,7 +190,7 @@ var Score = {
             this.playerLives -= 1;
             return this.playerLives;
         } else {
-            this.message = "Game over!";
+            this.message = 'Game over!';
             this.demoMode = true;
             var self = this;
             setTimeout(function() {self.resetGame();}, 3000);
@@ -203,8 +203,8 @@ var Score = {
         this.playerLives = 2;
         this.gameLevel = 0;
         this.demoMode = true;
-        this.message = "Press Space Bar to Play.";
-        return console.log("Game Reset. Demo mode", this.playerScore, this.playerLives);
+        this.message = 'Press Space Bar to Play.';
+        return console.log('Game Reset. Demo mode', this.playerScore, this.playerLives);
     },
 
     /** Renders Score, Lives and Messages */
@@ -216,22 +216,22 @@ var Score = {
             MSG_LOC = [251, 100];
 
         // Draw Score Info
-        ctx.font = "bold 20pt Arial";
-        ctx.strokeStyle = "black";
-        ctx.fillStyle = "white";
-        ctx.textAlign = "left";
+        ctx.font = 'bold 20pt Arial';
+        ctx.strokeStyle = 'black';
+        ctx.fillStyle = 'white';
+        ctx.textAlign = 'left';
         // Draw Score Info
-        ctx.fillText("Score: " + Score.playerScore, SCORE_LOC[0], SCORE_LOC[1]);
-        ctx.strokeText("Score: " + Score.playerScore, SCORE_LOC [0], SCORE_LOC[1]);
+        ctx.fillText('Score: ' + Score.playerScore, SCORE_LOC[0], SCORE_LOC[1]);
+        ctx.strokeText('Score: ' + Score.playerScore, SCORE_LOC [0], SCORE_LOC[1]);
         // Draw Lives Info
-        ctx.fillText("Lives: " + Score.playerLives, LIVES_LOC[0], LIVES_LOC[1]);
-        ctx.strokeText("Lives: " + Score.playerLives, LIVES_LOC[0], LIVES_LOC[1]);
+        ctx.fillText('Lives: ' + Score.playerLives, LIVES_LOC[0], LIVES_LOC[1]);
+        ctx.strokeText('Lives: ' + Score.playerLives, LIVES_LOC[0], LIVES_LOC[1]);
         // Draw Level Info
-        ctx.textAlign = "center";
-        ctx.fillText("Level: " + Score.gameLevel, LEVEL_LOC[0], LEVEL_LOC[1]);
-        ctx.strokeText("Level: " + Score.gameLevel, LEVEL_LOC[0], LEVEL_LOC[1]);
+        ctx.textAlign = 'center';
+        ctx.fillText('Level: ' + Score.gameLevel, LEVEL_LOC[0], LEVEL_LOC[1]);
+        ctx.strokeText('Level: ' + Score.gameLevel, LEVEL_LOC[0], LEVEL_LOC[1]);
         // Draw Message at top of canvas
-        ctx.font = "bold 22pt Arial";
+        ctx.font = 'bold 22pt Arial';
         ctx.fillText(this.message, MSG_LOC[0], MSG_LOC[1]);
         ctx.strokeText(this.message, MSG_LOC  [0], MSG_LOC  [1]);
     },
