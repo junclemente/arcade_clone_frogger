@@ -228,8 +228,8 @@ var Score = {
         ctx.strokeText('Lives: ' + Score.playerLives, LIVES_LOC[0], LIVES_LOC[1]);
         // Draw Level Info
         ctx.textAlign = 'center';
-        ctx.fillText('Level: ' + Score.gameLevel, LEVEL_LOC[0], LEVEL_LOC[1]);
-        ctx.strokeText('Level: ' + Score.gameLevel, LEVEL_LOC[0], LEVEL_LOC[1]);
+        ctx.fillText('Level: ' + (Score.gameLevel + 1), LEVEL_LOC[0], LEVEL_LOC[1]);
+        ctx.strokeText('Level: ' + (Score.gameLevel + 1), LEVEL_LOC[0], LEVEL_LOC[1]);
         // Draw Message at top of canvas
         ctx.font = 'bold 22pt Arial';
         ctx.fillText(this.message, MSG_LOC[0], MSG_LOC[1]);
