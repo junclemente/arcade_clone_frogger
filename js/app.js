@@ -1,78 +1,91 @@
-// Enemies our player must avoid
+/**
+ * Enemies our player must avoid
+ *
+ * @constructor
+ * @param {number} x - x coordinate of Enemy
+ * @param {number} y - y coordinate of Enemy
+ */
 var Enemy = function(x, y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     // Enemy coordinates
     this.x = x;
     this.y = y;
-    this.speed = ((Math.random() * 10) + 100);
+    this.gameLevelSpeed = Score.gameLevel * 10;
+    this.speed = ((Math.random() * 30) + 80 + this.gameLevelSpeed);
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+/**
+ * Update the enemy's position, required method for game
+ * @param {number} dt - a time delta between ticks
+ */
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
+     // You should multiply any movement by the dt parameter
+     // which will ensure the game runs at the same speed for
+     // all computers.
     if (this.x < 505) {
         this.x = this.x + (this.speed * dt);
     } else {
-        this.speed = ((Math.random() * 10) + 100);
+        this.speed = ((Math.random() * 30) + 80 + this.gameLevelSpeed);
         this.x = -90 + (this.speed * dt);
     }
-    // Reverse movement
-    // if (this.x > -90) {
-    //     this.x = this.x - ((level + this.speed) * dt);
-    // } else {
-    //     this.speed = 30; //((Math.random() * 100) + 1);
-    //     this.x = 505 - ((level + this.speed) * dt);
-    // }
 };
 
-// Draw the enemy on the screen, required method for game
+/** Draw the enemy on the screen, required method for game */
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
+/**
+ * Represents Player
+ *
+ * @constructor
+ * @param {number} x - x coordinate of Player
+ * @param {number} y - y coordinate of PLayer
+ */
 var Player = function(x, y) {
+
+    var X_HOME = 202,
+        Y_HOME = 403,
+        Y_HOME_CHECK = 71,
+        X_MOVE = 101,
+        Y_MOVE = 83,
+        SPRITE_HEIGHT = 83;
 
     // Player coordinates
     this.x = x;
     this.y = y;
 
-    this.score = 0;
-    this.lives = 3;
-    this.message = "Press Space Bar to Play.";
-    this.demoMode = true;
     // Player image
     this.sprite = 'images/char-boy.png';
 
+    /**
+     * Calls Player location reset and updates score/lives
+     * based on collision and home checks
+     */
     this.update = function() {
 
         if (this.collisionCheck()) {
             console.log("COLLISION!!");
             Score.message = "Ouch! Try Again!";
-            this.resetPosition();
             Score.updateLives();
+            this.resetPosition();
         }
         if (this.homeCheck()) {
             console.log("HOME!!");
             Score.message = "Score!!!";
-            this.resetPosition();
             Score.updateScore();
+            this.resetPosition();
         }
     };
 
+    /** Checks Player collision with allEnemies */
     this.collisionCheck = function() {
-        var spriteHeight = 83,
-            playerLoc = [this.x, this.y];
+        var playerLoc = [this.x, this.y];
 
         for (var i = 0; i < allEnemies.length; i++) {
             var spriteLeft = allEnemies[i].x + -80,
@@ -80,7 +93,7 @@ var Player = function(x, y) {
 
             if (playerLoc[0] > spriteLeft && playerLoc[0] < spriteRight) {
                 if (playerLoc[1] > allEnemies[i].y &&
-                    playerLoc[1] < allEnemies[i].y + spriteHeight) {
+                    playerLoc[1] < allEnemies[i].y + SPRITE_HEIGHT) {
                     return true;
                 }
             }
@@ -88,16 +101,18 @@ var Player = function(x, y) {
         return false;
     };
 
+    /** Checks if Player makes it to home row */
     this.homeCheck = function() {
-        if (this.y < 71) {
+        if (this.y < Y_HOME_CHECK) {
             return true;
         }
         return false;
     };
 
-    this.resetPosition = function(status) {
-        this.x = 202;
-        this.y = 403;
+    /** Resets Player location */
+    this.resetPosition = function() {
+        this.x = X_HOME;
+        this.y = Y_HOME;
     };
 
     this.render = function() {
@@ -105,115 +120,136 @@ var Player = function(x, y) {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     };
 
-    // For each acceptable keyPress, this function will update the x, y
-    // coordinates of the Player class.
+    /**
+     * For each acceptable keyPress, this function will update the x, y
+     * coordinates of the Player class.
+     *
+     * @param {string} keyPress - Acceptable keyPresses to move character or
+     * start game
+     */
     this.handleInput = function(keyPress){
-        var xMove = 101,
-            yMove = 83;
 
         if (keyPress == 'spacebar') {
             Score.demoMode = false;
             Score.message = "Move using WASD or Arrow Keys";
         }
-        if (Score.demoMode === true) {
-            Score.message = "Press Space Bar to Play.";
-        }
+
         if (Score.demoMode === false) {
             switch (keyPress) {
                 case 'left':
-                    // console.log('pressed left');
                     if (this.x > 0) {
-                        this.x -= xMove;
+                        this.x -= X_MOVE;
                     }
                     break;
                 case 'right':
-                    // console.log('pressed right');
-                    if (this.x < ctx.canvas.clientWidth - xMove) {
-                        this.x += xMove;
+                    if (this.x < ctx.canvas.clientWidth - X_MOVE) {
+                        this.x += X_MOVE;
                     }
                     break;
                 case 'down':
-                    // console.log('pressed down');
-                    if (this.y < ctx.canvas.clientHeight - (yMove * 3)) {
-                        this.y += yMove;
+                    if (this.y < ctx.canvas.clientHeight - (Y_MOVE * 3)) {
+                        this.y += Y_MOVE;
                     }
                     break;
                 case 'up':
-                    // console.log('pressed up');
                     if (this.y > 0) {
-                    this.y -= yMove;
+                    this.y -= Y_MOVE;
                     }
+                    break;
+                default:
+                    console.log('keyPress not acceptable');
                     break;
             }
         }
     };
 };
 
-// Score tracking
+/**
+ * Score object to keep track of score, lives and game state.
+ */
 var Score = {
 
     playerScore: 0,
-    playerLives: 3,
+    playerLives: 2,
+    gameLevel: 0,
     demoMode: true,
-    message: "",
+    message: "Press Spacebar to Play.",
 
     updateScore: function() {
         this.playerScore += 10;
-        return this.playerScore;
+        if (this.playerScore % 100 === 0) {
+            this.gameLevel = (this.playerScore / 100);
+        }
+        console.log(this.gameLevel);
+        return (this.playerScore, this.gameLevel);
     },
 
+    /** Updates lives and determines if all lives have been used */
     updateLives: function() {
-        this.playerLives -= 1;
-        return this.playerLives;
+        if (this.playerLives > 0) {
+            this.playerLives -= 1;
+            return this.playerLives;
+        } else {
+            this.message = "Game over!";
+            this.demoMode = true;
+            var self = this;
+            setTimeout(function() {self.resetGame();}, 3000);
+        }
     },
 
-    resetScore: function() {
+    /** Resets game state */
+    resetGame: function() {
         this.playerScore = 0;
-        this.playerLives = 3;
-        return (this.playerScore, this.playerLives);
+        this.playerLives = 2;
+        this.gameLevel = 0;
+        this.demoMode = true;
+        this.message = "Press Space Bar to Play.";
+        return console.log("Game Reset. Demo mode", this.playerScore, this.playerLives);
     },
 
+    /** Renders Score, Lives and Messages */
     render: function() {
 
-        var scoreLoc = [15, 570],
-        livesLoc = [390, 570],
-        msgLoc = [251, 100];
+        var SCORE_LOC = [15, 570],
+            LIVES_LOC = [390, 570],
+            LEVEL_LOC = [251, 570],
+            MSG_LOC = [251, 100];
 
-        if (this.demoMode === true) {
-            this.message = "Press Spacebar to Play"
-        }
-
-        // Draw Score and Lives
+        // Draw Score Info
         ctx.font = "bold 20pt Arial";
         ctx.strokeStyle = "black";
         ctx.fillStyle = "white";
-        ctx.textAlign = "left"
-        ctx.fillText("Score: " + Score.playerScore, scoreLoc[0], scoreLoc[1]);
-        ctx.strokeText("Score: " + Score.playerScore, scoreLoc[0], scoreLoc[1]);
-        ctx.fillText("Lives: " + Score.playerLives, livesLoc[0], livesLoc[1]);
-        ctx.strokeText("Lives: " + Score.playerLives, livesLoc[0], livesLoc[1]);
-        // Draw Messages
-        ctx.font = "bold 24pt Arial";
+        ctx.textAlign = "left";
+        // Draw Score Info
+        ctx.fillText("Score: " + Score.playerScore, SCORE_LOC[0], SCORE_LOC[1]);
+        ctx.strokeText("Score: " + Score.playerScore, SCORE_LOC [0], SCORE_LOC[1]);
+        // Draw Lives Info
+        ctx.fillText("Lives: " + Score.playerLives, LIVES_LOC[0], LIVES_LOC[1]);
+        ctx.strokeText("Lives: " + Score.playerLives, LIVES_LOC[0], LIVES_LOC[1]);
+        // Draw Level Info
         ctx.textAlign = "center";
-        ctx.fillText(this.message, msgLoc[0], msgLoc[1]);
-        ctx.strokeText(this.message, msgLoc[0], msgLoc[1]);
-    }
+        ctx.fillText("Level: " + Score.gameLevel, LEVEL_LOC[0], LEVEL_LOC[1]);
+        ctx.strokeText("Level: " + Score.gameLevel, LEVEL_LOC[0], LEVEL_LOC[1]);
+        // Draw Message at top of canvas
+        ctx.font = "bold 22pt Arial";
+        ctx.fillText(this.message, MSG_LOC[0], MSG_LOC[1]);
+        ctx.strokeText(this.message, MSG_LOC  [0], MSG_LOC  [1]);
+    },
 };
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-// var allEnemies = []
-
 var foeTop = new Enemy(-70, 60),
     foeMid = new Enemy(-70, 143),
     foeBot = new Enemy(-70, 227);
 var allEnemies = [foeTop, foeMid, foeBot];
 var player = new Player(202, 403);
-var level = 1;
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
+/**
+ * This listens for key presses and sends the keys to your
+ * Player.handleInput() method. You don't need to modify this.
+ */
 document.addEventListener('keyup', function(e) {
     // console.log(e.keyCode);
     var allowedKeys = {
