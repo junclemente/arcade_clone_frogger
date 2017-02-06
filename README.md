@@ -2,7 +2,7 @@ Arcade Game Clone - Frogger
 ===========================
 ## How to Play
 Download all files in this repository and open the `index.html` file.
-Or, to play online without downloading, click this link: [http://kajun.githb.io/fend_frogger_clone](http://kajun.github.io/fend_frogger_clone).
+Or, to play online without downloading, click this link: [http://kajun.github.io/fend_frogger_clone](http://kajun.github.io/fend_frogger_clone).
 
 ## Game Rules
 ### Object
